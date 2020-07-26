@@ -9,9 +9,8 @@ class FirstView extends StatefulWidget {
 
 class _FirstViewState extends State<FirstView> {
 
-  int selectedIndex = 0;
-
   PageController _pageController;
+  int selectedIndex = 0;
 
   @override
   void initState() {

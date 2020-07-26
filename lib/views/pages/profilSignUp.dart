@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:streamin/services/auth_services.dart';
+import 'package:streamin/services/fire_services.dart';
 import 'package:streamin/views/pages/musicGenrePage.dart';
 
 class PersonalisationPage extends StatefulWidget {
@@ -73,7 +73,7 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
                     Map<String, dynamic> data= {};
                     if(_pseudo.text !=null && _pseudo.text != ""){
                       data["pseudo"] = _pseudo.text;
-                      AuthService().modifyUser(data);
+                      FireServices().modifyUser(data);
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => MusicGenrePage()));
                     }else{
                       pseudoAlert();
@@ -148,7 +148,7 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
     setState(() {
       imageTaken = File(pickedFile.path);
     });
-    AuthService().modifyPicture(imageTaken);
+    FireServices().modifyPicture(imageTaken);
   }
 
   InkWell item(String image, String itemType, Function function){

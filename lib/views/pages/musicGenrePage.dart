@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:streamin/services/auth_services.dart';
+import 'package:streamin/services/fire_services.dart';
 
 import '../../main.dart';
 
@@ -92,8 +92,10 @@ class _MusicGenrePageState extends State<MusicGenrePage> {
                     Map<String, dynamic> data= {};
                     if(musicSelected.length == 3) {
                       data["musicGenre"] = musicSelected;
-                      AuthService().modifyUser(data);
+                      FireServices().modifyUser(data);
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController()));
+                    }else{
+                      alertDialog();
                     }
                   },
                   child: Text("Continuer", style: TextStyle(color: Colors.black, fontSize: 22.0, fontFamily: "Ariale"),),
@@ -104,6 +106,24 @@ class _MusicGenrePageState extends State<MusicGenrePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<Null> alertDialog() async{
+    return showDialog(
+        context: context,
+      builder: (BuildContext context){
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            title: Text("Veuilliez selectionner 3 genres musicaux", textAlign: TextAlign.center,),
+            actions: [
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("Ok")
+              )
+            ],
+          );
+      }
     );
   }
 

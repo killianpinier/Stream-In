@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:streamin/model/post.dart';
+import 'package:streamin/model/user.dart';
 
 String meUid;
 
-class AuthService {
+class FireServices {
 
   final _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -26,15 +28,17 @@ class AuthService {
     final FirebaseUser user = (await _firebaseAuth.createUserWithEmailAndPassword(email: mail.trim(), password: password)).user;
     //Create user to add in db
     String uid = user.uid;
-    List<dynamic> followers = [];
+    List<dynamic> followers = [uid];
     List<dynamic> following = [];
     List<dynamic> musicGenre = [];
     Map<String, dynamic> map = {
       "pseudo" : "",
+      "description" : "",
       "imageUrl" : "",
       "followers" : followers,
       "following" : following,
       "musicGenre" : musicGenre,
+      "totalViews" : 0,
       "uid" : uid,
     };
     addUser(uid, map);
@@ -49,8 +53,68 @@ class AuthService {
     fireUser.document(uid).setData(map);
   }
 
+  addPost(File musicFile, String title, File coverImage, String description, bool isAudio){
+    int date = DateTime.now().millisecondsSinceEpoch.toInt();
+    List<dynamic> likes = [];
+    List<dynamic> comments = [];
+    int views = 0;
+    Map<String, dynamic> map = {
+      "uid" : meUid,
+      "likes" : likes,
+      "comments" : comments,
+      "views" : views,
+      "date" : date,
+      "description" : description,
+      "title" : title,
+      "isAudio" : isAudio,
+    };
+    if(musicFile!=null && coverImage != null){
+      StorageReference coverRef = storagePosts.child(meUid).child(date.toString()).child("coverImage");
+      StorageReference musicRef = storagePosts.child(meUid).child(date.toString()).child("musicFile");
+      addImage(coverImage, coverRef).then((finalized){
+        String coverImageUrl = finalized;
+        map["coverImageUrl"] = coverImageUrl;
+      });
+      addVideo(musicFile, musicRef).then((finalized){
+        String musicFileUrl = finalized;
+        map["musicFileUrl"] = musicFileUrl;
+        fireUser.document(meUid).collection("posts").document().setData(map);
+      });
+    }else{
+      StorageReference musicRef = storagePosts.child(meUid).child(date.toString()).child("musicFile");
+      addVideo(musicFile, musicRef).then((finalized){
+        String musicFileUrl = finalized;
+        map["musicFileUrl"] = musicFileUrl;
+        fireUser.document(meUid).collection("posts").document().setData(map);
+      });
+    }
+  }
+
   Future resetPassword(String email) async {
     return _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+  }
+
+  addLike(Post post){
+    if(post.likes.contains(meUid)){
+      post.ref.updateData({"likes" : FieldValue.arrayRemove([meUid])});
+    }else{
+      post.ref.updateData({"likes": FieldValue.arrayUnion([meUid])});
+    }
+  }
+
+  addFollow(User me, User other){
+    if(me.following.contains(other.uid)){
+      me.ref.updateData({"following": FieldValue.arrayRemove([other.uid])});
+      other.ref.updateData({"followers" : FieldValue.arrayRemove([me.uid])});
+    }else{
+      me.ref.updateData({"following": FieldValue.arrayUnion([other.uid])});
+      other.ref.updateData({"followers" : FieldValue.arrayUnion([me.uid])});
+    }
+  }
+
+  addView(User user, Post post){
+    user.ref.updateData({"totalViews" : user.totalViews+1});
+    post.ref.updateData({"views" : post.views+1});
   }
 
   logOut() {
@@ -93,15 +157,17 @@ class AuthService {
 
     if(snapShot == null || !snapShot.exists){
       String uid = user.uid;
-      List<dynamic> followers = [];
+      List<dynamic> followers = [uid];
       List<dynamic> following = [];
       List<dynamic> musicGenre = [];
       Map<String, dynamic> map = {
         "pseudo" : "",
         "imageUrl" : "",
+        "description" : "",
         "followers" : followers,
         "following" : following,
         "musicGenre" : musicGenre,
+        "totalViews" : 0,
         "uid" : uid,
       };
       addUser(uid, map);
@@ -129,15 +195,17 @@ class AuthService {
 
         if(snapShot == null || !snapShot.exists){
           String uid = user.uid;
-          List<dynamic> followers = [];
+          List<dynamic> followers = [uid];
           List<dynamic> following = [];
           List<dynamic> musicGenre = [];
           Map<String, dynamic> map = {
             "pseudo" : "",
             "imageUrl" : "",
+            "description" : "",
             "followers" : followers,
             "following" : following,
             "musicGenre" : musicGenre,
+            "totalViews" : 0,
             "uid" : uid,
           };
           addUser(uid, map);
@@ -157,6 +225,14 @@ class AuthService {
   //storage
   static final storageInstance = FirebaseStorage.instance.ref();
   final storageUser = storageInstance.child("users");
+  final storagePosts = storageInstance.child("posts");
+
+  Future<String> addVideo(File file, StorageReference reference) async{
+    StorageUploadTask task = reference.putFile(file, StorageMetadata(contentType: 'video/mp4'));
+    StorageTaskSnapshot snapshot = await task.onComplete;
+    String urlString = await snapshot.ref.getDownloadURL();
+    return urlString;
+  }
 
   Future<String> addImage(File file, StorageReference reference) async{
     StorageUploadTask task = reference.putFile(file);

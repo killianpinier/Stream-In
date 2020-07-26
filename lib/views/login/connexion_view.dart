@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:streamin/main.dart';
-import 'package:streamin/services/auth_services.dart';
+import 'package:streamin/services/fire_services.dart';
 import 'package:streamin/views/pages/profilSignUp.dart';
 
 enum AuthFormType {signIn, signUp, reset}
@@ -83,7 +83,7 @@ class _ConnexionViewState extends State<ConnexionView> {
             _onLoading("signup");
             break;
           case AuthFormType.reset:
-            await AuthService().resetPassword(_mail.text);
+            await FireServices().resetPassword(_mail.text);
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController()));
             break;
         }
@@ -322,13 +322,13 @@ class _ConnexionViewState extends State<ConnexionView> {
     if(connected){
       try{
         if(connexionType == "signin"){
-          await AuthService().signIn(_mail.text, _pwd.text).whenComplete(() =>  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
+          await FireServices().signIn(_mail.text, _pwd.text).whenComplete(() =>  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
         }else if(connexionType == "signup"){
-          await AuthService().createAccount(_mail.text,_pwd.text).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => PersonalisationPage())));
+          await FireServices().createAccount(_mail.text,_pwd.text).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => PersonalisationPage())));
         }else if(connexionType == "google"){
-          await AuthService().signInWithGoogle().whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
+          await FireServices().signInWithGoogle().whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
         }else if(connexionType == "facebook"){
-          await AuthService().facebookLogin().whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
+          await FireServices().facebookLogin().whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeController())));
         }
       }catch(e) {
         setState(() {

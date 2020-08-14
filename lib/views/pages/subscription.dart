@@ -59,7 +59,12 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 (BuildContext context, int index){
               Post post = posts[index];
               User user = users.singleWhere((u) => u.uid == post.uid);
-              return ClipTile(post: post, user: user,);
+              return Card(
+                  elevation: 10.0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                  margin: EdgeInsets.all(10.0),
+                  child: ClipTile(post: post, user: user,)
+              );
             },
             childCount: posts.length,
           ),
@@ -67,6 +72,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
       ],
     );
   }
+
+
 
   setUpSub(){
     sub = FireServices().fireUser.where("followers", arrayContains: meUid).snapshots().listen((datas){

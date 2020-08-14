@@ -44,7 +44,7 @@ class UserSearchTile extends StatelessWidget {
               ],
             ),
             FlatButton(
-                onPressed: () => FireServices().addFollow(me, other),
+                onPressed: () => FireServices().addFollow(me.following, me, other),
                 child: Text(me.following.contains(other.uid)? "Se désabonner" : "S'abonner", style: TextStyle(fontFamily: "Ariale", color: primaryColor),)
             )
           ],

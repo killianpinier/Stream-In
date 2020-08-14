@@ -10,7 +10,7 @@ class ProfileImageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       if(imageUrl == "" || imageUrl == null){
-        return CircleAvatar(child: Text(pseudo[0].toUpperCase(), style: TextStyle(color: Colors.black, fontFamily: "Ariale")), backgroundColor: Colors.white,);
+        return CircleAvatar(child: Text(pseudo[0].toUpperCase(), style: TextStyle(color: Colors.black, fontFamily: "Ariale")), backgroundColor: Colors.grey[100],);
       }else{
         return CircleAvatar(backgroundImage: NetworkImage(imageUrl), backgroundColor: Colors.white,);
       }

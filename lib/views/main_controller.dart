@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:streamin/model/user.dart';
 import 'package:streamin/services/fire_services.dart';
 import 'package:streamin/tiles/profile_image_tile.dart';
-import 'package:streamin/views/pages/home.dart';
-import 'package:streamin/views/pages/music.dart';
+import 'package:streamin/views/pages/profile_page.dart';
+import 'package:streamin/views/pages/music_page.dart';
 import 'file:///D:/AndroidStudioProjects/stream_in/lib/views/pages/newPostPage/filePage.dart';
 import 'package:streamin/views/pages/profilSignUp.dart';
 import 'package:streamin/views/pages/subscription.dart';
@@ -113,7 +113,7 @@ class _MainControllerState extends State<MainController> {
         leading: _currentIndex != 0?Padding(
           padding: EdgeInsets.all(7.5),
           child: ProfileImageTile(imageUrl: user.imageUrl, pseudo: user.pseudo) ,
-        ): IconButton(icon: Icon(Icons.edit), onPressed: (){}),
+        ): SizedBox.shrink(),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(15.0))),
@@ -161,12 +161,6 @@ class _MainControllerState extends State<MainController> {
             ),
           ),
         ) : SizedBox(height: 0.0,),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () => FireServices().logOut(),
-          ),
-        ]
     );
   }
 

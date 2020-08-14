@@ -7,6 +7,9 @@ class User {
   String imageUrl;
   String description;
   int totalViews;
+  bool showContact;
+  int phone;
+  String email;
   List<dynamic> followers;
   List<dynamic> following;
   List<dynamic> musicGenre;
@@ -20,6 +23,9 @@ class User {
     imageUrl = map["imageUrl"];
     description = map["description"];
     totalViews = map["totalViews"];
+    showContact = map["showContact"];
+    email = map["email"];
+    phone = map["phone"];
     followers = map["followers"];
     following = map["following"];
     musicGenre = map["musicGenre"];

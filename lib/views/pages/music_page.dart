@@ -12,6 +12,7 @@ class MusicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Color(0xFF00B97E);
     return textFieldTap? CustomScrollView(
       slivers: [
         sliverAppBar,
@@ -30,44 +31,75 @@ class MusicPage extends StatelessWidget {
         SliverList(
             delegate: SliverChildListDelegate(
                 [
+                  SizedBox(height: 10.0,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      RaisedButton(
+                        onPressed: (){},
+                        color: Colors.white,
+                        child: Text("Mes téléchargements", style: TextStyle(fontFamily: "Ariale"),),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                        elevation: 10.0,
+                      ),
+                      RaisedButton(
+                        onPressed: (){},
+                        color: Colors.white,
+                        child: Text("Morceaux préférés", style: TextStyle(fontFamily: "Ariale"),),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                        elevation: 10.0,
+                      )
+                    ],
+                  ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0, top: 10.0),
-                    child: Text("Pour vous", style: TextStyle(color: Colors.black, fontSize: 22.0, fontFamily: "Ariale"),),
+                    padding: const EdgeInsets.only(left: 15.0, top: 15.0),
+                    child: Text("Playlists", style: TextStyle(fontFamily: "Ariale", fontSize: 23.0)),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10.0),
-                    height: 125.0,
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 7.0),
+                    height: 100.0,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.blue,),
-                          width: 185.0,
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                            elevation: 10.0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add, size: 35.0),
+                                Text("Créer", style: TextStyle(fontFamily: "Ariale"),)
+                              ],
+                            ),
+                          ),
+                          width: 100.0,
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.blue,),
-                          width: 185.0,
+                          width: 100.0,
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.blue,),
-                          width: 185.0,
+                          width: 100.0,
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.blue,),
-                          width: 185.0,
+                          width: 100.0,
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.blue,),
-                          width: 185.0,
+                          width: 100.0,
                         ),
                       ],
                     ),
                   ),
+
                 ]
             )
         )

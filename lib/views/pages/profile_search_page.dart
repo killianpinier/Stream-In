@@ -6,6 +6,7 @@ import 'package:streamin/model/post.dart';
 import 'package:streamin/model/user.dart';
 import 'package:streamin/services/fire_services.dart';
 import 'package:streamin/tiles/profile_page/profile_app_bar.dart';
+import 'package:streamin/views/pages/play_music_page.dart';
 
 class ProfileSearchPage extends StatefulWidget {
 
@@ -62,19 +63,20 @@ class _ProfilePageState extends State<ProfileSearchPage> {
                             labelColor:  Colors.black,
                             unselectedLabelColor:  Colors.white,
                             tabs: [
-                              Tab(icon: Icon(Icons.ondemand_video)),
                               Tab(icon: Icon(Icons.queue_music)),
+                              Tab(icon: Icon(Icons.ondemand_video)),
                             ],
                           ),
                         ),
                         color: primaryColor,
                       ),
+                      SizedBox(height: 15.0,),
                     ]
                 )
             ),
             posts.length == 0? SliverList(
-                delegate: SliverChildListDelegate([SizedBox(height: 10.0,), Center(child: Text("Compte sans contenu", style: TextStyle(fontFamily: "Ariale", fontSize: 19.0),))])
-            ) : currentIndex == 0? SliverGrid(
+                delegate: SliverChildListDelegate([Center(child: Text("Compte sans contenu", style: TextStyle(fontFamily: "Ariale", fontSize: 19.0),))])
+            ) : currentIndex == 1? SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 200.0,
                 mainAxisSpacing: 10.0,
@@ -83,17 +85,24 @@ class _ProfilePageState extends State<ProfileSearchPage> {
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                   return InkWell(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PlayMusicPage(post: posts[index], user: widget.other,))),
                     child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.grey[300], image: DecorationImage(image: posts[index].coverImage != null? NetworkImage(posts[index].coverImage) : AssetImage("assets/logoApp.png"), fit: BoxFit.cover)),
-                        alignment: Alignment.center,
-                        child: Center(child: Icon(Icons.play_circle_filled, color: Colors.white, size: 35.0,),)
-                    ),
+                            margin: EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Colors.grey[300], image: DecorationImage(image: posts[index].coverImage != null? NetworkImage(posts[index].coverImage) : AssetImage("assets/logoApp.png"), fit: BoxFit.cover)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Center(child: Icon(Icons.play_circle_filled, color: Colors.white, size: 35.0,),),
+                                SizedBox(height: MediaQuery.of(context).size.height/8-30,),
+                                Container(decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0))), width: MediaQuery.of(context).size.width, height: 30.0, child: Text(posts[index].title, textAlign: TextAlign.center, style: TextStyle(fontFamily: "Ariale"),), alignment: Alignment.center,),
+                              ],
+                            ),
+                    )
                   );
                 },
                 childCount: posts.length,
               ),
-            ) : SliverList(delegate: SliverChildListDelegate([]),)
+            ) : SliverList(delegate: SliverChildListDelegate([]))
           ],
         )
     );

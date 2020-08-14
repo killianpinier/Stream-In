@@ -32,9 +32,11 @@ class FireServices {
     List<dynamic> following = [];
     List<dynamic> musicGenre = [];
     Map<String, dynamic> map = {
+      "email" : mail,
       "pseudo" : "",
       "description" : "",
       "imageUrl" : "",
+      "showContact" : false,
       "followers" : followers,
       "following" : following,
       "musicGenre" : musicGenre,
@@ -51,6 +53,21 @@ class FireServices {
 
   addUser(String uid, Map<String, dynamic> map) {
     fireUser.document(uid).setData(map);
+  }
+
+  createAlbum(File coverImage, String title, List<String> postId){
+    Map<String, dynamic> map = {
+      "title" : title,
+      "music" : postId,
+    };
+    if(coverImage!=null){
+      StorageReference coverRef = storageUser.child(meUid).child("album").child(title);
+      addImage(coverImage, coverRef).then((finalized){
+        String coverImageUrl = finalized;
+        map["coverImage"] = coverImageUrl;
+        Firestore.instance.collection("users").document(meUid).collection("album").document().setData(map);
+      });
+    }
   }
 
   addPost(File musicFile, String title, File coverImage, String description, bool isAudio){
@@ -94,16 +111,16 @@ class FireServices {
     return _firebaseAuth.sendPasswordResetEmail(email: email.trim());
   }
 
-  addLike(Post post){
-    if(post.likes.contains(meUid)){
+  addLike(List<dynamic> likes, Post post){
+    if(likes.contains(meUid)){
       post.ref.updateData({"likes" : FieldValue.arrayRemove([meUid])});
     }else{
       post.ref.updateData({"likes": FieldValue.arrayUnion([meUid])});
     }
   }
 
-  addFollow(User me, User other){
-    if(me.following.contains(other.uid)){
+  addFollow(List<dynamic> following, User me, User other){
+    if(following.contains(other.uid)){
       me.ref.updateData({"following": FieldValue.arrayRemove([other.uid])});
       other.ref.updateData({"followers" : FieldValue.arrayRemove([me.uid])});
     }else{
@@ -127,7 +144,7 @@ class FireServices {
   }
 
   modifyPicture(File file){
-    StorageReference ref = storageUser.child(meUid);
+    StorageReference ref = storageUser.child(meUid).child("coverImage");
     addImage(file, ref).then((finalised) {
       Map<String, dynamic> data = {"imageUrl": finalised};
       modifyUser(data);
@@ -169,6 +186,8 @@ class FireServices {
         "musicGenre" : musicGenre,
         "totalViews" : 0,
         "uid" : uid,
+        "email" : user.email,
+        "showContact" : false,
       };
       addUser(uid, map);
       meUid = uid;
@@ -207,6 +226,8 @@ class FireServices {
             "musicGenre" : musicGenre,
             "totalViews" : 0,
             "uid" : uid,
+            "email" : user.email,
+            "showContact" : false,
           };
           addUser(uid, map);
           meUid = uid;
@@ -226,6 +247,8 @@ class FireServices {
   static final storageInstance = FirebaseStorage.instance.ref();
   final storageUser = storageInstance.child("users");
   final storagePosts = storageInstance.child("posts");
+  final storageAlbumPlaylist = storageInstance.child("creation");
+  final storageSaved = storageInstance.child("saved");
 
   Future<String> addVideo(File file, StorageReference reference) async{
     StorageUploadTask task = reference.putFile(file, StorageMetadata(contentType: 'video/mp4'));

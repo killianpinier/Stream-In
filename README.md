@@ -1,4 +1,4 @@
-# streamin
+# Stream'In
 
 Stream'In is a mobile app available on android and IOS, intended to be used by musicans as well as their fans.
 It allows you as an artist to share all your music for free, create albums and make yourself better known to your community.
